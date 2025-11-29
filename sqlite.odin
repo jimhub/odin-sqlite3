@@ -341,6 +341,7 @@ foreign sqlite {
 	config :: proc "c" (option: Config_Option) -> Result_Code ---
 	sql :: proc "c" (statement: ^Statement) -> cstring ---
 	expanded_sql :: proc "c" (statement: ^Statement) -> cstring ---
+	threadsafe :: proc "c" () -> c.int ---
 
 	// Export SQLCipher-specific functions conditionally.
 	when USE_SQLCIPHER {
