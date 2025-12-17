@@ -62,15 +62,15 @@ when ODIN_OS == .Windows {
 	} else {
 		when USE_DYNAMIC_LIB {
 			when USE_SQLCIPHER {
-				foreign import sqlite "libsqlcipher.dylib"
+				foreign import sqlite "lib/mac/sqlcipher.dylib"
 			} else {
-				foreign import sqlite "libsqlite3.dylib"
+				foreign import sqlite "lib/mac/sqlite3.dylib"
 			}
 		} else {
 			when USE_SQLCIPHER {
-				foreign import sqlite "libsqlcipher.a"
+				foreign import sqlite "lib/mac/sqlcipher.a"
 			} else {
-				foreign import sqlite "libsqlite3.a"
+				foreign import sqlite "lib/mac/sqlite3.a"
 			}
 		}
 	}
@@ -92,18 +92,20 @@ when ODIN_OS == .Windows {
 	} else {
 		when USE_DYNAMIC_LIB {
 			when USE_SQLCIPHER {
-				foreign import sqlite "libsqlcipher.so"
+				foreign import sqlite "lib/linux/sqlcipher.so"
 			} else {
-				foreign import sqlite "libsqlite3.so"
+				foreign import sqlite "lib/linux/sqlite3.so"
 			}
 		} else {
 			when USE_SQLCIPHER {
-				foreign import sqlite "libsqlcipher.a"
+				foreign import sqlite "lib/linux/sqlcipher.a"
 			} else {
-				foreign import sqlite "libsqlite3.a"
+				foreign import sqlite "lib/linux/sqlite3.a"
 			}
 		}
 	}
+} else when ODIN_OS == .JS {
+	foreign import sqlite "env.o"
 }
 
 Config_Option :: enum (c.int) {
