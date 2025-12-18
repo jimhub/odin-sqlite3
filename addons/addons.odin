@@ -24,6 +24,7 @@ Query_Error :: Maybe(string)
 Query_Param_Value :: union {
 	i32,
 	i64,
+	f32,
 	f64,
 	[]byte,
 	bool,
@@ -132,6 +133,10 @@ prepare :: proc(
 			sqlite3.bind_int(stmt^, idx, c.int(v)) or_return
 		} else if v, ok := param.value.(i64); ok {
 			sqlite3.bind_int64(stmt^, idx, c.int64_t(v)) or_return
+		} else if v, ok := param.value.(f32); ok {
+			sqlite3.bind_double(stmt^, idx, c.double(v)) or_return
+		} else if v, ok := param.value.(f64); ok {
+			sqlite3.bind_double(stmt^, idx, c.double(v)) or_return
 		} else if v, ok := param.value.([]byte); ok {
 			sqlite3.bind_blob64(stmt^, idx, slice.as_ptr(v), c.int64_t(len(v)), {behaviour = .Static}) or_return
 		} else if v, ok := param.value.(bool); ok {
@@ -232,6 +237,14 @@ write_struct_field_from_statement :: proc(
 		value := u64(sqlite3.column_int64(stmt, col_idx))
 		write_struct_field(obj, field^, value) or_return
 
+	case typeid_of(f32):
+		value := f32(sqlite3.column_double(stmt, col_idx))
+		write_struct_field(obj, field^, value) or_return
+
+	case typeid_of(f64):
+		value := f64(sqlite3.column_double(stmt, col_idx))
+		write_struct_field(obj, field^, value) or_return
+	
 	case typeid_of([]byte):
 		len := sqlite3.column_bytes(stmt, col_idx)
 		blob := slice.clone(slice.from_ptr(cast([^]byte)sqlite3.column_blob(stmt, col_idx), cast(int)len))
